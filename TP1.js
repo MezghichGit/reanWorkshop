@@ -118,7 +118,7 @@ class Stagiaire {
     lastname;
     address;
  
-    constructor(firstname, lastname, address) {
+    constructor(firstname="Toto", lastname="Toto aussi", address="Paris") {
         this.firstname = firstname;
         this.lastname = lastname;
         this.address = address;
@@ -130,11 +130,14 @@ class Stagiaire {
     }
 }
  
-let stagiaires = [
+//let stagiaire = new Stagiaire("Amine","Mezghich");
+let stagiaire = new Stagiaire();
+stagiaire.displayInfos();
+/*let stagiaires = [
     new Stagiaire('Oriane', 'Martinet', '2 rue test'),
     new Stagiaire('John', 'Doe', '3 rue test'),
     new Stagiaire('Jeanne', 'Doe', '4 rue test'),
     new Stagiaire('Test', 'test', '5 rue test'),
 ];
  
-stagiaires.forEach(stagiaire => stagiaire.displayInfos());
+stagiaires.forEach(stagiaire => stagiaire.displayInfos());*/
