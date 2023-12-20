@@ -108,7 +108,33 @@ e.display();*/
 const stagiaire= { nom: "Mezghich", ville: "Paris" };
 console.log(Object.values(stagiaire));*/
 
-let nom = "\t PLB COnsultant";
+/*let nom = "\t PLB COnsultant";
 console.log(nom);
 
-console.log(nom.trimStart());
+console.log(nom.trimStart());*/
+
+class Stagiaire {
+    firstname;
+    lastname;
+    address;
+ 
+    constructor(firstname, lastname, address) {
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.address = address;
+    }
+ 
+    displayInfos()
+    {
+        console.log(`Stagiaire : ${this.firstname} ${this.lastname} habitant ${this.address}`)
+    }
+}
+ 
+let stagiaires = [
+    new Stagiaire('Oriane', 'Martinet', '2 rue test'),
+    new Stagiaire('John', 'Doe', '3 rue test'),
+    new Stagiaire('Jeanne', 'Doe', '4 rue test'),
+    new Stagiaire('Test', 'test', '5 rue test'),
+];
+ 
+stagiaires.forEach(stagiaire => stagiaire.displayInfos());
