@@ -9,6 +9,8 @@ import {
 import axios from "axios";
 import asyncStorage from "@react-native-async-storage/async-storage/src/AsyncStorage";
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { useNavigation } from '@react-navigation/native'
+
 const HomeScreen = () => {
     const [providers, setProviders] = useState([]);
     const fetchProviders = async () => {
@@ -25,8 +27,11 @@ const HomeScreen = () => {
     useEffect(() => {
         fetchProviders();
     }, []);
+
+    const navigation = useNavigation();
     const addProvider = () => {
-        console.log('Ajouter un provider');
+      //  console.log('Ajouter un provider');
+      navigation.navigate('Add Provider')
     };
     return (
         <View style={{ flex: 1 }}>
