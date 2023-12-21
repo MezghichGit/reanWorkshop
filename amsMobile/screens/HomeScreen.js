@@ -6,13 +6,14 @@ import {
     Image,
     FlatList, TouchableOpacity
 } from 'react-native'
+
 import axios from "axios";
 import asyncStorage from "@react-native-async-storage/async-storage/src/AsyncStorage";
-import Icon from 'react-native-vector-icons/FontAwesome';
+import Icon from 'react-native-vector-icons/FontAwesome'; // Exemple d'utilisation de FontAwesome
 import { useNavigation } from '@react-navigation/native'
-
 const HomeScreen = () => {
     const [providers, setProviders] = useState([]);
+    const navigation = useNavigation();
     const fetchProviders = async () => {
         const u = await asyncStorage.getItem("token");
         axios.defaults.headers['Authorization'] = 'Bearer ' + u;
@@ -22,17 +23,27 @@ const HomeScreen = () => {
             .get("https://ams.smart-it-partner.com/api/providers")
             .then(response => response.data["hydra:member"])
         setProviders(res);
-        //console.log(res)
+        console.log(res)
     }
     useEffect(() => {
         fetchProviders();
     }, []);
-
-    const navigation = useNavigation();
     const addProvider = () => {
-      //  console.log('Ajouter un provider');
-      navigation.navigate('Add Provider')
+        navigation.navigate('Add Provider');
     };
+    const deleteProvider = async (idprovider) => {
+        const u = await asyncStorage.getItem("token");
+        axios.defaults.headers['Authorization'] = 'Bearer ' + u;
+        await axios.delete("https://ams.smart-it-partner.com/api/providers/" + idprovider)
+            .then(response => {
+                response.data;
+            })
+        navigation.reset({
+            index: 0,
+            routes: [{ name: 'List Providers', params: { refresh: true } }],
+        });
+    }
+
     return (
         <View style={{ flex: 1 }}>
             <TouchableOpacity style={styles.addButton} onPress={addProvider}>
@@ -51,7 +62,17 @@ const HomeScreen = () => {
                                 <Text style={styles.title}>{item.name}</Text>
                                 <Text style={styles.description}>{item.adress}</Text>
                                 <Text style={styles.description}>{item.email}</Text>
-
+                                <View style={styles.buttons}>
+                                    <TouchableOpacity
+                                        style={[styles.button, styles.view]}
+                                        onPress={() => deleteProvider(item.id)}
+                                    >
+                                        <Image
+                                            style={styles.icon}
+                                            source={{ uri: 'https://cdn-icons-png.flaticon.com/512/6861/6861362.png' }}
+                                        />
+                                    </TouchableOpacity>
+                                </View>
                             </View>
                         </View>
                     )
@@ -59,6 +80,7 @@ const HomeScreen = () => {
             /></View>
     )
 }
+
 const styles = StyleSheet.create({
     image: {
         width: 100,
@@ -103,6 +125,30 @@ const styles = StyleSheet.create({
     addButtonText: {
         color: 'white',
         marginLeft: 10,
+    }, imageContainer: {
+        alignItems: 'center', marginLeft: 30,
+        marginVertical: 10, width: '80%'
+    },
+    buttons: {
+        flexDirection: 'row',
+
+    },
+    button: {
+        height: 35,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 10,
+        width: 50,
+        marginRight: 5,
+        marginTop: 5,
+    },
+    icon: {
+        width: 20,
+        height: 20,
+    },
+    view: {
+        backgroundColor: '#eee',
     },
 })
 export default HomeScreen;
