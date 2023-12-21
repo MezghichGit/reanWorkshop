@@ -8,7 +8,7 @@ const NewScreen = () => {
     const fetchNews = async () => {
         const u = await asyncStorage.getItem("token");
         axios.defaults.headers['Authorization'] = 'Bearer ' + u;
-        const a = await asyncStorage.getItem("id");
+        //const a = await asyncStorage.getItem("id");
 
         const res = await axios
             .get("https://ams.smart-it-partner.com/api/news")
