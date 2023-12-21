@@ -1,33 +1,107 @@
 import React, { useState } from 'react';
-import { View, Text, Image, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, Image, TextInput, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import axios from "axios";
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation } from '@react-navigation/native';
+import * as ImagePicker from 'expo-image-picker';
+import Ionicons from "react-native-vector-icons/Ionicons";
+import asyncStorage from "@react-native-async-storage/async-storage/src/AsyncStorage";
+
 const AddProviderScreen = () => {
     const [name, setName] = useState("");
     const [adress, setAdress] = useState("");
     const [email, setEmail] = useState("");
-    const navigation = useNavigation("");
+    const navigation = useNavigation();
+
+    const [pickedImagePath, setPickedImagePath] = useState('');
+
+    const showImagePicker = async () => {
+        // Ask the user for the permission to access the media library
+        const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (permissionResult.granted === false) {
+            alert("You've refused to allow this appp to access your photos!");
+            return;
+        }
+        const result = await ImagePicker.launchImageLibraryAsync();
+        if (!result.didCancel) {
+            setPickedImagePath(result.uri);
+        } else {
+            console.log('Sélection d\'image annulée');
+        }
+
+    }
+
+    // This function is triggered when the "Open camera" button pressed
+    const openCamera = async () => {
+        // Ask the user for the permission to access the camera
+        const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
+        if (permissionResult.granted === false) {
+            alert("You've refused to allow this appp to access your camera!");
+            return;
+        }
+        const result = await ImagePicker.launchCameraAsync();
+        if (!result.didCancel) {
+            setPickedImagePath(result.uri);
+
+        }
+    }
+
+    const selectedImage = pickedImagePath;
+
     const addProvider = async () => {
-        const provider = {
-            name: name,
-            adress: adress,
-            email: email,
-        };
+
+        let localUri = selectedImage;
+
+        //const a = await asyncStorage.getItem("id");
+        let filename = localUri ? localUri.split('/').pop() : '';
+        let match = /\.(\w+)$/.exec(filename);
+        let imageType = match ? `image/${match[1]}` : `image`;
+
+        const formData = new FormData();
+        if (localUri) {
+            formData.append('image', { uri: localUri, name: filename, type: imageType });
+        }
+        formData.append('adress', adress);
+        formData.append('name', name);
+        formData.append('email', email);
         try {
-            const response = await axios.post("https://ams.smart-it-partner.com/api/providers", provider, {
-                headers: { 'Content-Type': 'application/ld+json' }
+            const response = await axios.post("https://ams.smart-it-partner.com/addprovider/mobile", formData, {
+                headers: { 'Content-Type': 'multipart/form-data' },
             });
-            //navigation.navigate('List Providers');
-             navigation.reset({ index: 0, routes: [{ name: 'List Providers', params: { refresh: true } }], });
+            navigation.reset({
+                index: 0,
+                routes: [{ name: 'List Providers', params: { refresh: true } }],
+            });
         } catch (error) {
-            // Gérez l'erreur ici
-            console.error(error);
+            Alert.alert('Erreur', 'Une erreur est survenue lors de l\'ajout du publication', error);
         }
     };
     return (
         <View style={styles.container}>
-
-            <View style={styles.form}>
+            <View style={styles.imageContainer}>
+                {pickedImagePath !== '' && <Image
+                    source={{ uri: pickedImagePath }}
+                    style={styles.image}
+                />
+                }
+            </View>
+            <ScrollView style={styles.form}>
+                <View style={styles.buttonContainer}>
+                    <Text style={styles.label}>Image</Text>
+                    <TouchableOpacity style={styles.uploadButton} onPress={showImagePicker}>
+                        <Ionicons
+                            name="image"
+                            size={30}
+                            color="#149750"
+                        />
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.cameraButton} onPress={openCamera}>
+                        <Ionicons
+                            name="camera"
+                            size={30}
+                            color="#165FAD"
+                        />
+                    </TouchableOpacity>
+                </View>
                 <Text style={styles.label}>Name</Text>
                 <TextInput
                     style={styles.input}
@@ -52,7 +126,7 @@ const AddProviderScreen = () => {
                 <TouchableOpacity style={styles.button} onPress={() => addProvider()}>
                     <Text style={styles.buttonText}>Valider</Text>
                 </TouchableOpacity>
-            </View>
+            </ScrollView>
         </View>
     );
 };
@@ -87,6 +161,35 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontSize: 18,
         textAlign: 'center',
+    },
+    uploadButton: {
+        backgroundColor: 'white',
+        padding: 10,
+        marginLeft: 0,
+        borderRadius: 15,
+        backgroundColor: '#e7e7e7',
+    },
+    cameraButton: {
+        backgroundColor: 'white',
+        padding: 10,
+        marginRight: 50,
+        borderRadius: 15,
+        backgroundColor: '#e7e7e7',
+    },
+    buttonContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginVertical: 5, marginTop: 10,
+    },
+    imageContainer: {
+        alignItems: 'center',
+        marginLeft: 10,
+        marginVertical: 10,
+        width: '60%'
+    },
+    image: {
+        width: '100%',
+        height: 150,
     },
 });
 export default AddProviderScreen;

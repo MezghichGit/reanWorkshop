@@ -25,7 +25,7 @@ const NewScreen = () => {
                 <TouchableOpacity key={post.id} style={styles.post}>
                     <Image source={{ uri: 'https://ams.smart-it-partner.com/uploads/news/' + post.image }} style={styles.postImage} />
                     <View style={styles.postContent}>
-                        <Text style={styles.postTitle}>{post.titre}</Text>
+                        <Text style={styles.postTitle}>{post.nom}</Text>
                         <Text style={styles.postMeta}>
                             {Moment(post.date).format('DD-MM-YYYY')}
                         </Text>
@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
     },
     postImage: {
         width: '100%',
-        height: 200,
+        height: 300,
     },
     postContent: {
         padding: 20,
