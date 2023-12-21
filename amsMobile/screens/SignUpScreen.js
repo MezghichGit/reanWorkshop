@@ -1,19 +1,42 @@
 import React, { useState } from 'react';
 import { View, Text, Image, StyleSheet, TextInput, TouchableOpacity, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native'
+import axios from "axios";
+import jwtDecode from "jwt-decode";
+import asyncStorage from "@react-native-async-storage/async-storage/src/AsyncStorage";
 
 const SignUpScreen = props => {
     const [password, setPassword] = useState("")
-    const [username, setUsername] = useState("");
-    const [nom, setNom] = useState("");
-    const [prenom, setPrenom] = useState("");
-
+    const [username, setUsername] = useState('');
+    const [nom, setNom] = useState('');
+    const [prenom, setPrenom] = useState('');
     const navigation = useNavigation();
+
+
+    const addUserData = async () => {
+        const formData = new FormData();
+        if (nom.trim() === '' && prenom.trim() === '' && password.trim() === '' && email.trim() === '') {
+            Alert.alert('Erreur', 'Une erreur est survenue lors de l\'inscription');
+            return;
+        }
+        formData.append('password', password);
+        formData.append('email', username);
+        formData.append('nom', nom);
+        formData.append('prenom', prenom);
+        try {
+            const response = await axios.post("https://ams.smart-it-partner.com/register/mobile", formData, {
+                headers: { 'Content-Type': 'multipart/form-data' },
+            });
+            alert('Votre compte a été crée avec succès!');
+            navigation.navigate('Login');
+        } catch (error) {
+            Alert.alert('Erreur', 'Une erreur est survenue lors de l\'inscription', error);
+        }
+    };
+    
     const onSignInPressed = () => {
         navigation.navigate('Login')
     }
-
-
     return (
         <View style={{ flex: 1, backgroundColor: '#ffffff' }}>
             <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
@@ -30,7 +53,7 @@ const SignUpScreen = props => {
                             }}>
                             <Image
                                 style={{
-                                    width: '100%', height: 160
+                                    width: '100%', height: 120
                                 }}
                                 source={require('../assets/sip.png')} />
                         </View>
@@ -44,6 +67,7 @@ const SignUpScreen = props => {
                         borderTopRightRadius: 60
                     }}>
                         <View style={styles.spacing_big}></View>
+
                         <View style={styles.label}>
                             <Text style={styles.label}>Nom </Text>
                         </View>
@@ -64,7 +88,6 @@ const SignUpScreen = props => {
                             value={prenom}
                         />
                         <View style={styles.spacing_big}></View>
-
                         <View style={styles.label}>
                             <Text style={styles.label}>Email</Text>
                         </View>
@@ -87,7 +110,8 @@ const SignUpScreen = props => {
                             />
                         </View>
                         <View style={styles.spacing}></View>
-                        <TouchableOpacity >
+
+                        <TouchableOpacity onPress={addUserData}>
                             <View
                                 style={{
                                     margin: 10,
@@ -101,7 +125,7 @@ const SignUpScreen = props => {
                                     style={{
                                         color: 'white',
                                         fontSize: 20
-                                    }}>S’inscrire </Text>
+                                    }}>S'inscrire </Text>
                             </View>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={onSignInPressed}>
@@ -171,6 +195,7 @@ const styles = StyleSheet.create({
         width: 200,
         height: 200,
         resizeMode: 'contain',
+
     },
     card: {
         backgroundColor: '#fff',

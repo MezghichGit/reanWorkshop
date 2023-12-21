@@ -1,7 +1,7 @@
 import axios from "axios";
 import asyncStorage  from "@react-native-async-storage/async-storage/src/AsyncStorage";
-import jwtDecode from "jwt-decode";
-
+//import jwtDecode from "jwt-decode";
+import * as jwtDecode from 'jwt-decode';
 function logout()
 {
    asyncStorage.removeItem('token')
