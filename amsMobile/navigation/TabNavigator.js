@@ -12,7 +12,7 @@ export default function TabNavigator() {
     screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
         let iconName;
-        if (route.name == "Home") { iconName = "home-outline"; }
+        if (route.name == "Providers") { iconName = "home-outline"; }
         else if (route.name == "Articles") { iconName = "phone-portrait-sharp"; }
         else if (route.name == "News") { iconName = "newspaper-outline"; }
  
@@ -25,7 +25,7 @@ export default function TabNavigator() {
         );
         },
         })}>
-    <tab.Screen name="Home" component={HomeScreen} options={{ title: 'Providers' }}/>
+    <tab.Screen name="Providers" component={HomeScreen} options={{ title: 'List Providers' }}/>
     <tab.Screen name="Articles" component={ArticleScreen} options={{ title: 'Articles' }}/>
     <tab.Screen name="News" component={NewScreen} options={{ title: 'News' }}/>
     </tab.Navigator>
