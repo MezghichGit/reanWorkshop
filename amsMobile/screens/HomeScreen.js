@@ -11,15 +11,17 @@ import asyncStorage from "@react-native-async-storage/async-storage/src/AsyncSto
 
 const HomeScreen = () => {
     const [providers, setProviders] = useState([]);
+
+
     const fetchProviders = async () => {
         const u = await asyncStorage.getItem("token");
         axios.defaults.headers['Authorization'] = 'Bearer ' + u;
-        const a = await asyncStorage.getItem("id");
+        //const a = await asyncStorage.getItem("id");
         const res = await axios
             .get("https://ams.smart-it-partner.com/api/providers")
             .then(response => response.data["hydra:member"])
         setProviders(res);
-        console.log(res)
+       // console.log(res)
     }
     useEffect(() => {
         fetchProviders();

@@ -23,11 +23,11 @@ const SignInScreen = props => {
             await authtoken.authentificate(newUser);
             setError("");
             const token = await asyncStorage.getItem("token");
-            console.log(token);
+            //console.log(token);
             /*const jwtdata = jwtDecode(token);
             await asyncStorage.setItem("email", jwtdata.email);
-            await asyncStorage.setItem("id", JSON.stringify(jwtdata.id));
-            navigation.navigate('Home');*/
+            await asyncStorage.setItem("id", JSON.stringify(jwtdata.id));*/
+            navigation.navigate('Home');
         }
         catch (error) {
 
