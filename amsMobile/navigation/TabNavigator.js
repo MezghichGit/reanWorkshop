@@ -15,6 +15,7 @@ import addProviderScreen from '../screens/AddProviderScreen';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useNavigation } from '@react-navigation/native';
 import authtoken from '../service/authtoken';
+import MapScreen  from '../screens/MapScreen';
 const tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
@@ -35,7 +36,17 @@ const HomeStack = () => (
 
             })}
         />
-       
+       <Stack.Screen
+        name="Maps"
+        component={MapScreen}
+        options={({route}) => ({
+          title: route.params?.title,
+          headerStyle: {
+            backgroundColor: '#DFF8F7',
+          }
+        })}
+      />
+
     </Stack.Navigator>
 );
 export default function TabNavigator() {

@@ -58,7 +58,7 @@ const HomeScreen = () => {
         let token;
         if (Device.isDevice) {
             const { status: existingStatus } = await Notifications.getPermissionsAsync();
-           
+
             let finalStatus = existingStatus;
 
             if (existingStatus !== 'granted') {
@@ -84,7 +84,7 @@ const HomeScreen = () => {
             alert('Must use physical device for Push Notifications');
             // cas emulateur android
 
-           // setRef(token)
+            // setRef(token)
 
             //const id = await asyncStorage.getItem("id");
             token = (await Notifications.getExpoPushTokenAsync()).data;
@@ -180,6 +180,20 @@ const HomeScreen = () => {
                                             source={{ uri: 'https://cdn-icons-png.flaticon.com/512/6861/6861362.png' }}
                                         />
                                     </TouchableOpacity>
+                                    <TouchableOpacity
+                                        style={[styles.button, styles.view]}
+
+                                        onPress={() => navigation.navigate('Maps', {
+
+                                            id: item.id,
+                                        })}
+                                    >
+                                        <Image
+                                            style={styles.icon}
+                                            source={{ uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/Google_Maps_icon_%282015-2020%29.svg/512px-Google_Maps_icon_%282015-2020%29.svg.png' }}
+                                        />
+                                    </TouchableOpacity>
+
                                 </View>
                             </View>
                         </View>
