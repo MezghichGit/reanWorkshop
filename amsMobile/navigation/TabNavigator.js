@@ -40,12 +40,11 @@ const HomeStack = () => (
 );
 export default function TabNavigator() {
     const navigation=useNavigation();
-    const logout = () => {
-      authtoken.logout();
+    const openDrawer = () => {
       navigation.openDrawer()
     };
-    const LogoutButton = () => (
-      <TouchableOpacity onPress={logout} style={{ marginRight: 10 }}>
+    const OpenDrawer = () => (
+      <TouchableOpacity onPress={openDrawer} style={{ marginRight: 10 }}>
         <AntDesign name="bars" size={25} color="#000" />
       </TouchableOpacity>
     );
@@ -70,15 +69,15 @@ export default function TabNavigator() {
           })}>
       <tab.Screen name="Providers" component={HomeStack}   options={{
       title: 'Providers',
-      headerRight: () => <LogoutButton />
+      headerRight: () => <OpenDrawer />
     }}/>
       <tab.Screen name="Articles" component={ArticleScreen} options={{
       title: 'Articles',
-      headerRight: () => <LogoutButton />
+      headerRight: () => <OpenDrawer />
     }}/>
       <tab.Screen name="News" component={NewScreen} options={{
       title: 'News',
-      headerRight: () => <LogoutButton />
+      headerRight: () => <OpenDrawer />
     }}/>
       </tab.Navigator>
    
