@@ -31,12 +31,6 @@ const HomeScreen = () => {
     const addProvider = () => {
         navigation.navigate('Add Provider');
     };
-
-    const editProvider = (idprovider) => {
-        navigation.navigate("Add Provider", { idprovider });
-      };
-
-      
     const deleteProvider = async (idprovider) => {
         const u = await asyncStorage.getItem("token");
         axios.defaults.headers['Authorization'] = 'Bearer ' + u;
@@ -71,15 +65,6 @@ const HomeScreen = () => {
                                 <View style={styles.buttons}>
                                     <TouchableOpacity
                                         style={[styles.button, styles.view]}
-                                        onPress={() => editProvider(item.id)}
-                                    >
-                                        <Image
-                                            style={styles.icon}
-                                            source={{ uri: 'https://cdn-icons-png.flaticon.com/512/2429/2429794.png' }}
-                                        />
-                                    </TouchableOpacity>
-                                    <TouchableOpacity
-                                        style={[styles.button, styles.view]}
                                         onPress={() => deleteProvider(item.id)}
                                     >
                                         <Image
@@ -87,6 +72,18 @@ const HomeScreen = () => {
                                             source={{ uri: 'https://cdn-icons-png.flaticon.com/512/6861/6861362.png' }}
                                         />
                                     </TouchableOpacity>
+
+                                    <TouchableOpacity
+                                        style={[styles.button, styles.view]}
+
+                                        onPress={() => navigation.navigate('Maps', {id: item.id})}
+                                    >
+                                        <Image
+                                            style={styles.icon}
+                                            source={{ uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/Google_Maps_icon_%282015-2020%29.svg/512px-Google_Maps_icon_%282015-2020%29.svg.png' }}
+                                        />
+                                    </TouchableOpacity>
+
                                 </View>
                             </View>
                         </View>

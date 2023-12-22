@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState } from 'react';
 import { View, Text, Image, TextInput, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import axios from "axios";
 import { useNavigation } from '@react-navigation/native';
@@ -6,10 +6,7 @@ import * as ImagePicker from 'expo-image-picker';
 import Ionicons from "react-native-vector-icons/Ionicons";
 import asyncStorage from "@react-native-async-storage/async-storage/src/AsyncStorage";
 
-const AddProviderScreen = ({ route }) => {
-
-    const idprovider = route.params?.idprovider;
-
+const AddProviderScreen = () => {
     const [name, setName] = useState("");
     const [adress, setAdress] = useState("");
     const [email, setEmail] = useState("");
@@ -48,25 +45,13 @@ const AddProviderScreen = ({ route }) => {
         }
     }
 
-    const fetchProvider = async () => {
-        const res = await axios.get("https://ams.smart-it-partner.com/api/providers/" + idprovider).then(response => response.data)
-        setName(res.name);
-        setAdress(res.adress);
-        setEmail(res.email);
-        setPickedImagePath('https://ams.smart-it-partner.com/uploads/provider/' + res.photo);
-    }
-    useEffect(() => {
-        if (idprovider) {
-            fetchProvider();
-        }
-    }, []);
-
     const selectedImage = pickedImagePath;
 
     const addProvider = async () => {
 
         let localUri = selectedImage;
 
+        // localUri = "img.png";
         //const a = await asyncStorage.getItem("id");
         let filename = localUri ? localUri.split('/').pop() : '';
         let match = /\.(\w+)$/.exec(filename);
@@ -74,22 +59,19 @@ const AddProviderScreen = ({ route }) => {
 
         const formData = new FormData();
         if (localUri) {
+           
             formData.append('image', { uri: localUri, name: filename, type: imageType });
+            console.log("Image Name : "+filename);
+            console.log("Image type: "+imageType);
+            
         }
         formData.append('adress', adress);
         formData.append('name', name);
         formData.append('email', email);
-
         try {
-            if (idprovider) {
-                const response = await axios.patch(`https://ams.smart-it-partner.com/api/providers/${idprovider}`, {"adress":adress, "name":name, "email":email}, {
-                    headers: {'Content-Type': 'application/merge-patch+json'},
-                });
-            } else {
-                const response = await axios.post("https://ams.smart-it-partner.com/addprovider/mobile", formData, {
-                    headers: { 'Content-Type': 'multipart/form-data' },    
-                });
-            }
+            const response = await axios.post("https://ams.smart-it-partner.com/addprovider/mobile", formData, {
+                headers: { 'Content-Type': 'multipart/form-data' },
+            });
             navigation.reset({
                 index: 0,
                 routes: [{ name: 'List Providers', params: { refresh: true } }],
@@ -98,14 +80,11 @@ const AddProviderScreen = ({ route }) => {
             Alert.alert('Erreur', 'Une erreur est survenue lors de l\'ajout du publication', error);
         }
     };
-
     return (
         <View style={styles.container}>
             <View style={styles.imageContainer}>
-                {pickedImagePath !== '' && <Image
-                    source={{ uri: pickedImagePath }}
-                    style={styles.image}
-                />
+                {
+                pickedImagePath !== '' && <Image source={{ uri: pickedImagePath }} style={styles.image} />
                 }
             </View>
             <ScrollView style={styles.form}>
@@ -209,11 +188,11 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginLeft: 10,
         marginVertical: 10,
-        width: '60%'
+        width: '50%'
     },
     image: {
         width: '100%',
-        height: 150,
+        height: 120,
     },
 });
 export default AddProviderScreen;
