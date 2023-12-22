@@ -10,7 +10,10 @@ import {
 import axios from "axios";
 import asyncStorage from "@react-native-async-storage/async-storage/src/AsyncStorage";
 import Icon from 'react-native-vector-icons/FontAwesome'; // Exemple d'utilisation de FontAwesome
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation } from '@react-navigation/native';
+import * as Device from 'expo-device';
+import * as Notifications from 'expo-notifications';
+
 const HomeScreen = () => {
     const [providers, setProviders] = useState([]);
     const navigation = useNavigation();
@@ -23,7 +26,7 @@ const HomeScreen = () => {
             .get("https://ams.smart-it-partner.com/api/providers")
             .then(response => response.data["hydra:member"])
         setProviders(res);
-        console.log(res)
+        // console.log(res)
     }
     useEffect(() => {
         fetchProviders();
@@ -34,9 +37,9 @@ const HomeScreen = () => {
 
     const editProvider = (idprovider) => {
         navigation.navigate("Add Provider", { idprovider });
-      };
+    };
 
-      
+
     const deleteProvider = async (idprovider) => {
         const u = await asyncStorage.getItem("token");
         axios.defaults.headers['Authorization'] = 'Bearer ' + u;
@@ -49,6 +52,95 @@ const HomeScreen = () => {
             routes: [{ name: 'List Providers', params: { refresh: true } }],
         });
     }
+
+    // push notification
+
+    async function registerForPushNotificationsAsync() {
+        let token;
+        if (Device.isDevice) {
+            const { status: existingStatus } = await Notifications.getPermissionsAsync();
+            let finalStatus = existingStatus;
+            if (existingStatus !== 'granted') {
+                const { status } = await Notifications.requestPermissionsAsync();
+                finalStatus = status;
+            }
+            if (finalStatus !== 'granted') {
+                alert('Failed to get push token for push notification!');
+                return;
+            }
+            token = (await Notifications.getExpoPushTokenAsync()).data;
+            //setRef(token)
+
+            //const id = await asyncStorage.getItem("id");
+            const id = "15";
+            console.log("token :" + token);
+            axios.post(
+                "https://ams.smart-it-partner.com/api/push_notives",
+                { token: token, user: id },
+                { headers: { 'Content-Type': 'application/ld+json' } }
+            );
+        } else {
+            alert('Must use physical device for Push Notifications');
+            // cas emulateur android
+
+
+           // setRef(token)
+
+            //const id = await asyncStorage.getItem("id");
+            token = (await Notifications.getExpoPushTokenAsync()).data;
+            const id = "15";
+            console.log("token :" + token);
+            axios.post(
+                "https://ams.smart-it-partner.com/api/push_notives",
+                { token: token, user: id },
+                { headers: { 'Content-Type': 'application/ld+json' } }
+            );
+
+        }
+
+        if (Platform.OS === 'android') {
+            Notifications.setNotificationChannelAsync('default', {
+                name: 'default',
+                importance: Notifications.AndroidImportance.MAX,
+                vibrationPattern: [0, 250, 250, 250],
+                lightColor: '#FF231F7C',
+            });
+        }
+
+        return token;
+    }
+
+    useEffect(() => {
+        registerForPushNotificationsAsync(); //appel pour s'enregister
+
+        // Configure le comportement de la notification lorsque l'application est ouverte
+        Notifications.setNotificationHandler({
+            handleNotification: async () => ({
+                shouldShowAlert: true, // Affiche une alerte même si l'app est ouverte
+                shouldPlaySound: true,
+                shouldSetBadge: false,
+            }),
+        });
+
+        // Gestionnaire pour les interactions avec les notifications
+        const responseSubscription = Notifications.addNotificationResponseReceivedListener(response => {
+            const data = response.notification.request.content.data;
+
+            // Vérifie si l'application était en premier plan au moment où l'utilisateur a interagi avec la notification
+            if (response.notification.request.trigger.type === 'push' && data.screen && navigation) {
+                // Naviguez vers l'écran spécifié
+                navigation.navigate(data.screen, {
+                    title: data.title,
+                    id: data.id
+
+                })
+            }
+        });
+
+        return () => {
+            responseSubscription.remove();
+        };
+    }, [navigation]);
 
     return (
         <View style={{ flex: 1 }}>

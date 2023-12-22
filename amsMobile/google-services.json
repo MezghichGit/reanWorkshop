@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "630193626990",
+    "project_id": "plbconsultant-f759f",
+    "storage_bucket": "plbconsultant-f759f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:630193626990:android:0f2a3aa2e821f279c9eb7f",
+        "android_client_info": {
+          "package_name": "com.mezghich.amsMobile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDEXUbx7AoHenJt58h4CsJyVF4z73g1XhM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

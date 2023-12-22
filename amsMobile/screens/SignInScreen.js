@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, Image, StyleSheet, TextInput, TouchableOpacity, ScrollView, Button } from 'react-native';
 import { useNavigation } from '@react-navigation/native'
 import asyncStorage from "@react-native-async-storage/async-storage/src/AsyncStorage";
-//import jwtDecode from "jwt-decode";
-import * as jwtDecode from 'jwt-decode';
+import jwtDecode from "jwt-decode";
 import authtoken from '../service/authtoken';
 const SignInScreen = props => {
     const [username, setUsername] = useState('amine.mezghich@gmail.com');
@@ -24,9 +23,16 @@ const SignInScreen = props => {
             setError("");
             const token = await asyncStorage.getItem("token");
             //console.log(token);
-            /*const jwtdata = jwtDecode(token);
+
+           
+
+            const jwtdata = jwtDecode(token);
+            //console.log(jwtdata);
+
             await asyncStorage.setItem("email", jwtdata.email);
-            await asyncStorage.setItem("id", JSON.stringify(jwtdata.id));*/
+            await asyncStorage.setItem("nom", jwtdata.nom);
+            await asyncStorage.setItem("prenom", jwtdata.prenom);
+            await asyncStorage.setItem("id", JSON.stringify(jwtdata.id));
             navigation.navigate('Home');
         }
         catch (error) {

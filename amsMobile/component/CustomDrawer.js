@@ -18,24 +18,25 @@ import asyncStorage from "@react-native-async-storage/async-storage/src/AsyncSto
 
 const CustomDrawer = props => {
   const navigation = useNavigation();
- /*
+
   const [nom, setNom] = useState('') ;
   const [prenom, setPrenom] = useState('') ;
+  const [email, setEmail] = useState('') ;
 
   useEffect(() => {
       const getToken = async () => {
-          const token = await asyncStorage.getItem("nom");
-          const image = await asyncStorage.getItem("phpto");
+          //const token = await asyncStorage.getItem("nom");
+          //const image = await asyncStorage.getItem("phpto");
           const email = await asyncStorage.getItem("email");
           const nom = await asyncStorage.getItem("nom");
           const preom = await asyncStorage.getItem("prenom");
 
-          setImage(image);
-setPrenom(preom)
+          setEmail(email);
+          setPrenom(preom)
           setNom(nom);
       }
       getToken();
-  }, []);*/
+  }, []);
  
 
   function logout() {
@@ -54,11 +55,22 @@ setPrenom(preom)
           <Text
             style={{
               color: 'black',
-              fontSize: 18,   fontWeight: '600',
+              fontSize: 12,   fontWeight: '600',
               marginBottom: 5,marginLeft:15
             }}>
-          {/*{prenom} {nom}*/}
+          Bienvue {prenom} {nom}
           </Text>
+
+          <Text
+            style={{
+              color: 'black',
+              fontSize: 12,   fontWeight: '600',
+              marginBottom: 5,marginLeft:15
+            }}>
+          {email}
+          </Text>
+
+
         <View style={{flex: 1, backgroundColor: '#fff', paddingTop: 10}}>
           <DrawerItemList {...props} />
         </View>
