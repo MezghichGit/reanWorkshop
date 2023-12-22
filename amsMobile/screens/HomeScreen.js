@@ -39,7 +39,6 @@ const HomeScreen = () => {
         navigation.navigate("Add Provider", { idprovider });
     };
 
-
     const deleteProvider = async (idprovider) => {
         const u = await asyncStorage.getItem("token");
         axios.defaults.headers['Authorization'] = 'Bearer ' + u;
@@ -59,7 +58,9 @@ const HomeScreen = () => {
         let token;
         if (Device.isDevice) {
             const { status: existingStatus } = await Notifications.getPermissionsAsync();
+           
             let finalStatus = existingStatus;
+
             if (existingStatus !== 'granted') {
                 const { status } = await Notifications.requestPermissionsAsync();
                 finalStatus = status;
@@ -71,8 +72,8 @@ const HomeScreen = () => {
             token = (await Notifications.getExpoPushTokenAsync()).data;
             //setRef(token)
 
-            //const id = await asyncStorage.getItem("id");
-            const id = "15";
+            const id = await asyncStorage.getItem("id");
+            //const id = "15";
             console.log("token :" + token);
             axios.post(
                 "https://ams.smart-it-partner.com/api/push_notives",
@@ -83,12 +84,12 @@ const HomeScreen = () => {
             alert('Must use physical device for Push Notifications');
             // cas emulateur android
 
-
            // setRef(token)
 
             //const id = await asyncStorage.getItem("id");
             token = (await Notifications.getExpoPushTokenAsync()).data;
-            const id = "15";
+            const id = await asyncStorage.getItem("id");
+            //const id = "15";
             console.log("token :" + token);
             axios.post(
                 "https://ams.smart-it-partner.com/api/push_notives",
