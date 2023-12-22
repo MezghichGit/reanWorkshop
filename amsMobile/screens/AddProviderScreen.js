@@ -49,6 +49,9 @@ const AddProviderScreen = ({ route }) => {
     }
 
     const fetchProvider = async () => {
+        const u = await asyncStorage.getItem("token");
+        axios.defaults.headers['Authorization'] = 'Bearer ' + u;
+
         const res = await axios.get("https://ams.smart-it-partner.com/api/providers/" + idprovider).then(response => response.data)
         setName(res.name);
         setAdress(res.adress);
@@ -81,6 +84,9 @@ const AddProviderScreen = ({ route }) => {
         formData.append('email', email);
 
         try {
+          
+            const u = await asyncStorage.getItem("token");
+            axios.defaults.headers['Authorization'] = 'Bearer ' + u;
             if (idprovider) {
                 const response = await axios.patch(`https://ams.smart-it-partner.com/api/providers/${idprovider}`, {"adress":adress, "name":name, "email":email}, {
                     headers: {'Content-Type': 'application/merge-patch+json'},
